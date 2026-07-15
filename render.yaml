@@ -45,6 +45,7 @@ services:
           name: argus-postgres
           property: password
       - key: REDIS_URL
+        sync: false
         fromService:
           type: redis
           name: argus-redis
@@ -90,6 +91,7 @@ services:
           name: argus-postgres
           property: password
       - key: REDIS_URL
+        sync: false
         fromService:
           type: redis
           name: argus-redis
