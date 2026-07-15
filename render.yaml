@@ -22,7 +22,7 @@ services:
 
     envVars:
       - key: NEO4J_URI
-        sync: false          # Set manually in Render dashboard — never in YAML
+        sync: false
       - key: NEO4J_USERNAME
         sync: false
       - key: NEO4J_PASSWORD
@@ -53,14 +53,14 @@ services:
           name: argus-redis
           property: connectionString
       - key: OLLAMA_URL
-        value: ""            # Leave blank — Ollama runs locally, not on free Render
+        value: ""
       - key: OLLAMA_MODEL
         value: llama3.1
 
     disk:
       name: model-artifacts
       mountPath: /app/app/models
-      sizeGB: 1              # Enough for RF pkl + GraphSAGE weights + CSVs
+      sizeGB: 1
 
   # ── Celery Worker (Background Worker) ─────────────────────────
   - type: worker
@@ -108,13 +108,13 @@ services:
       mountPath: /app/app/models
       sizeGB: 1
 
+  # ── Redis ─────────────────────────────────────────────────────
+  - type: redis
+    name: argus-redis
+    plan: free
+
 # ── Managed databases ──────────────────────────────────────────
 databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
-    
-services:
-  - type: redis
-    name: argus-redis
-    plan: free     # Render internal only  
