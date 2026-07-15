@@ -16,7 +16,7 @@ services:
     name: argus-api
     runtime: docker
     dockerfilePath: ./Dockerfile
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     plan: free
     healthCheckPath: /health
 
@@ -113,8 +113,8 @@ databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
-    user: postgres
-
-  - name: argus-redis
-    plan: free
-    ipAllowList: []          # Render internal only  
+    
+services:
+  - type: redis
+    name: argus-redis
+    plan: free     # Render internal only  
