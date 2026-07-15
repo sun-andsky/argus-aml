@@ -1,0 +1,26 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Environment — NEVER commit credentials
+.env
+
+# Model artifacts — too large for git, deploy via volume mount or object storage
+app/models/rf_model.pkl
+app/models/graphsage_weights.pt
+app/models/account_level_features.csv
+app/models/edge_list.csv
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# OS
+.DS_Store
+Thumbs.db

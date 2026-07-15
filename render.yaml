@@ -1,0 +1,120 @@
+# Render Blueprint — deploys the ARGUS backend from one YAML.
+# Push this file to your repo root, then connect the repo in
+# https://dashboard.render.com → New → Blueprint.
+#
+# Two services share the same Docker image (same Dockerfile),
+# different start commands — identical to how docker-compose works locally.
+#
+# Model files (rf_model.pkl, graphsage_weights.pt, etc.) are NOT committed
+# to git. After first deploy, upload them via Render's Shell tab or use
+# a persistent disk (see disk section below).
+
+services:
+
+  # ── FastAPI (Web Service) ──────────────────────────────────────
+  - type: web
+    name: argus-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    healthCheckPath: /health
+
+    envVars:
+      - key: NEO4J_URI
+        sync: false          # Set manually in Render dashboard — never in YAML
+      - key: NEO4J_USERNAME
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: argus-postgres
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: argus-postgres
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: argus-postgres
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: argus-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: argus-postgres
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: argus-redis
+          property: connectionString
+      - key: OLLAMA_URL
+        value: ""            # Leave blank — Ollama runs locally, not on free Render
+      - key: OLLAMA_MODEL
+        value: llama3.1
+
+    disk:
+      name: model-artifacts
+      mountPath: /app/app/models
+      sizeGB: 1              # Enough for RF pkl + GraphSAGE weights + CSVs
+
+  # ── Celery Worker (Background Worker) ─────────────────────────
+  - type: worker
+    name: argus-worker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: celery -A app.celery_app worker --loglevel=info --concurrency=1
+    plan: free
+
+    envVars:
+      - key: NEO4J_URI
+        sync: false
+      - key: NEO4J_USERNAME
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: argus-postgres
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: argus-postgres
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: argus-postgres
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: argus-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: argus-postgres
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: argus-redis
+          property: connectionString
+
+    disk:
+      name: model-artifacts-worker
+      mountPath: /app/app/models
+      sizeGB: 1
+
+# ── Managed databases ──────────────────────────────────────────
+databases:
+  - name: argus-postgres
+    plan: free
+    databaseName: aml_cases
+    user: postgres
+
+  - name: argus-redis
+    plan: free
+    ipAllowList: []          # Render internal only  

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    @page { size: A4; margin: 2.5cm; }
+    body { font-family: Georgia, serif; font-size: 11pt; color: #1a1a1a; line-height: 1.5; }
+    h1 { font-size: 16pt; border-bottom: 2px solid #333; padding-bottom: 8px; }
+    h2 { font-size: 13pt; margin-top: 24px; color: #333; }
+    .meta-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .meta-table td { padding: 6px 10px; border: 1px solid #ccc; }
+    .meta-table td.label { font-weight: bold; background: #f5f5f5; width: 35%; }
+    .tier-CRITICAL { color: #b00020; font-weight: bold; }
+    .tier-HIGH { color: #c65911; font-weight: bold; }
+    .tier-MEDIUM { color: #997a00; font-weight: bold; }
+    .tier-LOW { color: #2e7d32; font-weight: bold; }
+    .narrative { text-align: justify; margin: 12px 0; }
+    .footer { margin-top: 40px; font-size: 9pt; color: #777; border-top: 1px solid #ccc; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>Suspicious Activity Report — Draft</h1>
+
+<table class="meta-table">
+    <tr><td class="label">Account ID</td><td>{{ account_id }}</td></tr>
+    <tr><td class="label">Case ID</td><td>{{ case.id }}</td></tr>
+    <tr><td class="label">Case Status</td><td>{{ case.status }}</td></tr>
+    <tr><td class="label">Risk Score</td><td>{{ risk.risk_score }}</td></tr>
+    <tr><td class="label">Risk Tier</td><td class="tier-{{ risk.risk_tier }}">{{ risk.risk_tier }}</td></tr>
+    <tr><td class="label">Report Generated</td><td>{{ generated_at }}</td></tr>
+</table>
+
+<h2>Narrative</h2>
+<div class="narrative">
+    {% for paragraph in narrative.split('\n\n') %}
+        <p>{{ paragraph }}</p>
+    {% endfor %}
+</div>
+
+<h2>Model Basis</h2>
+<table class="meta-table">
+    <tr><td class="label">Random Forest Score</td><td>{{ risk.rf_score }}</td></tr>
+    <tr><td class="label">GraphSAGE Score</td><td>{{ risk.graphsage_score }}</td></tr>
+    <tr><td class="label">Ensemble Weighting</td><td>0.5 × RF + 0.5 × GraphSAGE</td></tr>
+</table>
+
+<h2>Fund Flow Summary</h2>
+<table class="meta-table">
+    <tr><td class="label">Outbound chains (≤3 hops)</td><td>{{ outbound.paths_found }}</td></tr>
+    <tr><td class="label">Inbound chains (≤3 hops)</td><td>{{ inbound.paths_found }}</td></tr>
+</table>
+
+<div class="footer">
+    This report was drafted with AI assistance (Llama 3.1) from structured
+    system evidence and requires human compliance officer review before
+    filing. This is not an automated filing decision.
+</div>
+
+</body>
+</html>
