@@ -46,10 +46,6 @@ services:
           property: password
       - key: REDIS_URL
         sync: false
-        fromService:
-          type: redis
-          name: argus-redis
-          property: connectionString
       - key: OLLAMA_URL
         value: ""
       - key: OLLAMA_MODEL
@@ -92,10 +88,7 @@ services:
           property: password
       - key: REDIS_URL
         sync: false
-        fromService:
-          type: redis
-          name: argus-redis
-          property: connectionString
+        
 
 # ── Managed databases ──────────────────────────────────────────
 databases:
