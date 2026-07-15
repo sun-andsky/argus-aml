@@ -1,13 +1,10 @@
-# Render Blueprint — deploys the ARGUS backend from one YAML.
-# Push this file to your repo root, then connect the repo in
-# https://dashboard.render.com → New → Blueprint.
+
+
+# Render Blueprint — ARGUS backend
+# Free tier compatible — no disks, correct docker runtime syntax
 #
-# Two services share the same Docker image (same Dockerfile),
-# different start commands — identical to how docker-compose works locally.
-#
-# Model files (rf_model.pkl, graphsage_weights.pt, etc.) are NOT committed
-# to git. After first deploy, upload them via Render's Shell tab or use
-# a persistent disk (see disk section below).
+# Model files cannot use persistent disk on free tier.
+# Upload them via the Render Shell after first deploy (see DEPLOYMENT.md).
 
 services:
 
@@ -57,17 +54,12 @@ services:
       - key: OLLAMA_MODEL
         value: llama3.1
 
-    disk:
-      name: model-artifacts
-      mountPath: /app/app/models
-      sizeGB: 1
-
   # ── Celery Worker (Background Worker) ─────────────────────────
   - type: worker
     name: argus-worker
     runtime: docker
     dockerfilePath: ./Dockerfile
-    startCommand: celery -A app.celery_app worker --loglevel=info --concurrency=1
+    dockerCommand: celery -A app.celery_app worker --loglevel=info --concurrency=1
     plan: free
 
     envVars:
@@ -103,18 +95,14 @@ services:
           name: argus-redis
           property: connectionString
 
-    disk:
-      name: model-artifacts-worker
-      mountPath: /app/app/models
-      sizeGB: 1
-
-  # ── Redis ─────────────────────────────────────────────────────
-  - type: redis
-    name: argus-redis
-    plan: free
-
 # ── Managed databases ──────────────────────────────────────────
 databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
+
+  - name: argus-redis
+    plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all (Render internal routing handles isolation)
