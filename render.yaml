@@ -52,7 +52,7 @@ databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
-    user: postgres
+    
 
   - name: argus-redis
     plan: free
