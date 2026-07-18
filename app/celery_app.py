@@ -23,6 +23,8 @@ celery_app = Celery(
     "aml_tasks",
     broker=REDIS_URL,
     backend=REDIS_URL,
+    broker_use_ssl=REDIS_URL.startswith("rediss://"),
+    redis_backend_use_ssl=REDIS_URL.startswith("rediss://"),
     include=["app.tasks"],
 )
 
@@ -31,8 +33,9 @@ celery_app.conf.update(
     result_serializer="json",
     accept_content=["json"],
     task_track_started=True,
-    # Auto-scoring tasks are lightweight but the graph forward pass isn't
-    # free — cap retries so a persistently broken account doesn't loop.
     task_acks_late=True,
     task_reject_on_worker_lost=True,
+    broker_transport_options={
+        "visibility_timeout": 3600,
+    },
 )
