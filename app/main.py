@@ -9,6 +9,8 @@ from app.services.evidence_service import EvidenceService
 from app.services.sar_service import SARService
 from app.routers import scoring, graph, cases, sar
 from app.routers import scoring, graph, cases, sar, transactions
+from fastapi.middleware.cors import CORSMiddleware
+
 # ...
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
 
@@ -52,6 +54,19 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="AML Risk Scoring API", version="1.3.0", lifespan=lifespan)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",                  # local dev
+        "https://argus-dashboard.vercel.app",     # replace with your Vercel URL
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.add_middleware(
     CORSMiddleware,

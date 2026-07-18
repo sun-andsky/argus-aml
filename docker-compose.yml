@@ -1,20 +1,12 @@
 version: "3.9"
 
-# One-command local startup: docker compose up
-#
-# Services:
-#   redis    — Celery broker + result backend
-#   postgres — Case management database
-#   api      — FastAPI scoring + graph + SAR endpoints
-#   worker   — Celery background scorer (uses prefork on Linux, no --pool=solo needed)
-#
-# Neo4j stays on AuraDB (already cloud-hosted) — no local container needed.
-# The dashboard (React/Vite) is NOT in this Compose file; run it separately
-# with `npm run dev` or deploy to Vercel (see DEPLOYMENT.md).
+# Local one-command startup: docker compose up
+# API and worker run as SEPARATE services here (unlike Render free tier
+# which combines them via start.sh). This is the correct architecture —
+# start.sh is a free-tier workaround, not how it should run in production.
 
 services:
 
-  # ── Redis ────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: argus-redis
@@ -27,7 +19,6 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # ── PostgreSQL ───────────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: argus-postgres
@@ -46,7 +37,6 @@ services:
       retries: 10
     restart: unless-stopped
 
-  # ── FastAPI ──────────────────────────────────────────────────────
   api:
     build:
       context: .
@@ -73,13 +63,11 @@ services:
       - ./app/models:/app/app/models:ro
     restart: unless-stopped
 
-  # ── Celery Worker ────────────────────────────────────────────────
   worker:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: argus-worker
-    # No --pool=solo needed inside Linux containers — prefork works correctly
     command: celery -A app.celery_app worker --loglevel=info --concurrency=2
     env_file:
       - .env
