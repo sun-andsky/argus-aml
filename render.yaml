@@ -1,5 +1,7 @@
 # Render Blueprint — ARGUS backend (free tier compatible)
-# API + Celery worker run together in one web service via start.sh
+# Redis is NOT provisioned here — use Upstash free tier instead.
+# Set REDIS_URL manually in the Render dashboard after deploying.
+# See DEPLOYMENT.md Part 3B for Upstash setup instructions.
 
 services:
 
@@ -18,6 +20,8 @@ services:
         sync: false
       - key: NEO4J_PASSWORD
         sync: false
+      - key: REDIS_URL
+        sync: false          # Set manually from Upstash — see DEPLOYMENT.md
       - key: POSTGRES_HOST
         fromDatabase:
           name: argus-postgres
@@ -38,11 +42,6 @@ services:
         fromDatabase:
           name: argus-postgres
           property: password
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: argus-redis
-          property: connectionString
       - key: OLLAMA_URL
         value: ""
       - key: OLLAMA_MODEL
@@ -52,10 +51,4 @@ databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
-    
-
-  - name: argus-redis
-    plan: free
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: Render internal
+    user: postgres
