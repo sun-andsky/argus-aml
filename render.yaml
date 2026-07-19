@@ -1,7 +1,6 @@
 # Render Blueprint — ARGUS backend (free tier compatible)
-# Redis is NOT provisioned here — use Upstash free tier instead.
-# Set REDIS_URL manually in the Render dashboard after deploying.
-# See DEPLOYMENT.md Part 3B for Upstash setup instructions.
+# Redis: use Upstash free tier — set REDIS_URL manually in Render dashboard
+# Model files: downloaded at startup from Google Drive via download_models.sh
 
 services:
 
@@ -21,7 +20,7 @@ services:
       - key: NEO4J_PASSWORD
         sync: false
       - key: REDIS_URL
-        sync: false          # Set manually from Upstash — see DEPLOYMENT.md
+        sync: false
       - key: POSTGRES_HOST
         fromDatabase:
           name: argus-postgres
@@ -46,9 +45,16 @@ services:
         value: ""
       - key: OLLAMA_MODEL
         value: llama3.1
+      - key: GDRIVE_RF_MODEL_ID
+        sync: false
+      - key: GDRIVE_SAGE_WEIGHTS_ID
+        sync: false
+      - key: GDRIVE_FEATURES_ID
+        sync: false
+      - key: GDRIVE_EDGES_ID
+        sync: false
 
 databases:
   - name: argus-postgres
     plan: free
     databaseName: aml_cases
-    
