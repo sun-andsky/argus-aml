@@ -60,7 +60,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",                  # local dev
-        "https://argus-dashboard.vercel.app",     # replace with your Vercel URL
+        "https://argus-aml.vercel.app",     # replace with your Vercel URL
     ],
     allow_credentials=True,
     allow_methods=["*"],
