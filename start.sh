@@ -12,7 +12,7 @@ celery -A app.celery_app worker --loglevel=info --concurrency=1 &
 CELERY_PID=$!
 
 echo "[start.sh] Starting FastAPI server..."
-uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} &
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860} &
 API_PID=$!
 
 # If either process exits, kill the other so Render restarts the whole service
