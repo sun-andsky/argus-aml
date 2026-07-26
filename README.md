@@ -11,7 +11,6 @@ The system combines Machine Learning and Graph Neural Networks (GraphSAGE) with 
 - Investigate inbound and outbound transaction chains
 - Manage AML investigation cases
 - Generate AI-assisted Suspicious Activity Reports (SAR)
-- Export SAR reports as PDF
 
 ## Tech Stack
 
@@ -28,10 +27,6 @@ The system combines Machine Learning and Graph Neural Networks (GraphSAGE) with 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ---
-# Architecture
-
-![Architecture]()
-# Application(Screenshots/argus_aml_architecture.png)
 
 ## 1. Alerts Dashboard
 ![Alerts](Screenshots/Home.png)
@@ -51,6 +46,10 @@ The system combines Machine Learning and Graph Neural Networks (GraphSAGE) with 
 
 ## 6. Generated SAR Report
 ![Generated SAR](Screenshots/SAR_Generated.png)
+
+
+# Architecture
+![Architecture](Screenshots/Architecture.jpeg)
 
 ---
 
