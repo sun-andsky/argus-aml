@@ -35,8 +35,8 @@ export default function App() {
           <div className="flex items-center gap-10">
             {/* Logo — reserved slot for the real ARGUS mark */}
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-navy/15 border border-navy/25 flex items-center justify-center overflow-hidden shrink-0">
-                <img src="/logo.png" alt="ARGUS Logo" className="w-8 h-8 object-contain" />
+              <div className="w-11 h-11 rounded-xl">
+                <img src="logo.png" alt="ARGUS Logo" className="w-12 h-12 object-contain" />
               </div>
               <div>
                 <p className="font-display font-semibold text-lg text-ink leading-none tracking-tight">
@@ -95,3 +95,4 @@ export default function App() {
     </div>
   )
 }
+  

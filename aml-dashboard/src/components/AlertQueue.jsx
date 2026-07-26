@@ -34,15 +34,21 @@ export default function AlertQueue({ onOpenCase }) {
     setLoading(true)
     try {
       const data = await fetchCases()
+
+      // Only re-score accounts that have no stored score — avoids a full
+      // batch inference call when cases already have valid scores from creation
+      const needsScoring = data.filter((c) => !c.risk_score || c.risk_score === 0)
+
       let scoreMap = {}
-      if (data.length > 0) {
+      if (needsScoring.length > 0) {
         try {
-          const batch = await fetchBatchScores(data.map((c) => c.account_id))
+          const batch = await fetchBatchScores(needsScoring.map((c) => c.account_id))
           batch.scored.forEach((s) => { scoreMap[String(s.account_id)] = s })
         } catch {
-          // fall back to stored values below
+          // fall back to stored values
         }
       }
+
       const enriched = data.map((c) => {
         const live = scoreMap[String(c.account_id)]
         return {
@@ -51,6 +57,7 @@ export default function AlertQueue({ onOpenCase }) {
           risk_tier: live?.risk_tier ?? c.risk_tier ?? 'LOW',
         }
       })
+
       setCases(enriched)
       setError(null)
     } catch (err) {

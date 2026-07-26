@@ -302,7 +302,7 @@ export default function CaseDetail({ caseId, onBack }) {
 
         {/* ── Right column: notes + actions ─────────────────── */}
         <div className="flex flex-col gap-6">
-          <div className="border border-line bg-surface rounded-xl p-6 min-h-[520px] flex flex-col transition-colors duration-200 ease-smooth hover:border-line-strong">
+          <div className="border border-line bg-surface rounded-xl p-6 min-h-[705px] flex flex-col transition-colors duration-200 ease-smooth hover:border-line-strong">
             <div className="flex items-center justify-between mb-1">
               <p className="font-display font-semibold text-lg text-ink">Investigator Notes</p>
               <span className="text-xs font-mono text-ink-faint">{notes.length} chars</span>

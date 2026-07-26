@@ -21,6 +21,14 @@ async def lifespan(app: FastAPI):
 
     app.state.scoring_service = ScoringService(models_dir=MODELS_DIR, device="cpu")
 
+    # Pre-warm: run one dummy score so the first real request isn't cold
+    try:
+        first_account = app.state.scoring_service.account_features_df['account_id'].iloc[0]
+        app.state.scoring_service.score_account(first_account)
+        print("[Startup] Pre-warm complete")
+    except Exception:
+        pass
+
     try:
         app.state.neo4j_service = Neo4jService()
     except RuntimeError as e:
@@ -55,17 +63,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="AML Risk Scoring API", version="1.3.0", lifespan=lifespan)
 
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",                  # local dev
-        "https://argus-aml.vercel.app",     # replace with your Vercel URL
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 app.add_middleware(

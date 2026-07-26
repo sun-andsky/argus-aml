@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://host.docker.internal:11434/api/generate")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1")
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
