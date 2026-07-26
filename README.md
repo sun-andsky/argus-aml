@@ -1,6 +1,6 @@
 # ARGUS – Anti Money Laundering System
 
-ARGUS is an AI-powered Anti Money Laundering (AML) investigation platform that helps analysts identify suspicious financial transactions, investigate money flow, and generate Suspicious Activity Reports (SARs).
+ARGUS is a Anti Money Laundering (AML) investigation platform that helps analysts identify suspicious financial transactions, investigate money flow, and generate Suspicious Activity Reports (SARs).
 
 The system combines Machine Learning and Graph Neural Networks (GraphSAGE) with graph-based transaction analysis to detect potentially fraudulent accounts.
 
